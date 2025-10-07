@@ -1,0 +1,48 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.app {
+  text-align: center;
+}
+
+h1 {
+  background: #004c97;
+  color: white;
+  margin: 0;
+  padding: 10px;
+}
+
+.status-bar {
+  background: #e6f0ff;
+  padding: 6px;
+  font-size: 14px;
+}
+
+#map {
+  height: calc(100vh - 100px);
+  width: 100%;
+}
+
+/* ---------- custom icons ---------- */
+.leaflet-marker-icon.rotated-icon {
+  transform-origin: center center !important;
+}
+
+.klm-icon img,
+.leaflet-marker-icon.klm-icon {
+  filter: hue-rotate(190deg) saturate(1.2);
+}
+
+.indigo-icon img,
+.leaflet-marker-icon.indigo-icon {
+  filter: hue-rotate(20deg) saturate(1.5);
+}
+.plane-marker img {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.4));
+}
