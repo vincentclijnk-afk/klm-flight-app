@@ -1,0 +1,24 @@
+===============================
+Laatste update: 2025-10-10 14:28
+===============================
+SAMENVATTING (huidige status)
+Projectmap: /data/data/com.termux/files/home/klm-flight-app/frontend
+Laatste backup: frontend_backup_2025-10-10_14-11-07.zip (17 minuten geleden)
+Git status:
+ M ../tools/map-tools.sh
+?? ../.config/
+?? ../.env
+?? ../backups/
+?? map-overzicht.txt.new
+?? ../node_modules/
+?? ../package-lock.json
+?? ../package.json
+?? ../server.js
+?? ../tools/map-tools.log
+---
+LOGBOEK (sessie 2025-10-10 14:28)
+Notities: Dag/nacht getest; terminator werkt; kleur #aad3df bevestigd
+Gewijzigde bestanden deze sessie:
+ - tools/map-tools.sh
+===============================
+
