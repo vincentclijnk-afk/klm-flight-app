@@ -1,20 +1,20 @@
-#!/bin/bash
-# Backup script voor klm-flight-app
-# Maakt lokale zip + commit/push naar GitHub
+#!/data/data/com.termux/files/usr/bin/bash
+set -e
 
+# Automatisch backupscript voor KLM Flight App
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-message=${1:-"Automatische backup"}
+message="${1:-Automatische backup $timestamp}"
 
-backup_dir="backups"
-mkdir -p "$backup_dir"
+echo "🔄 Backup gestart: $message"
 
-zip_file="$backup_dir/backup_$timestamp.zip"
-zip -r "$zip_file" frontend/ >/dev/null
+# Zorg dat tools-map bestaat
+mkdir -p tools
 
-echo "✅ Lokale backup gemaakt: $zip_file"
+# Voeg alles toe behalve wat in .gitignore staat
+git add -A
 
-git add .
-git commit -m "$message"
-git push origin main
+# Maak commit
+git commit -m "$message" || echo "⚠️  Geen wijzigingen om te committen."
 
-echo "✅ GitHub backup voltooid met bericht: $message"
+# Push naar GitHub
+git push origin main && echo "✅ Backup voltooid en gepusht: $message"
