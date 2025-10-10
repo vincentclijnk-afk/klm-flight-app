@@ -1,26 +1,16 @@
-html, body, #root, #map {
+html, body, #root {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: #aad3df;
   overflow: hidden;
+  background-color: #aad3df; /* oceaankleur */
 }
 
-/* Leaflet-pane-volgorde forceren */
-.leaflet-pane.leaflet-tile-pane {
-  z-index: 100 !important;
-}
-.leaflet-pane.leaflet-overlay-pane {
-  z-index: 200 !important; /* terminator komt hier */
-  pointer-events: none;
-}
-.leaflet-pane.leaflet-marker-pane {
-  z-index: 300 !important;
-}
-.leaflet-pane.leaflet-tooltip-pane {
-  z-index: 400 !important;
-}
-.leaflet-pane.leaflet-popup-pane {
-  z-index: 500 !important;
+.leaflet-container {
+  height: 100vh !important;
+  width: 100vw !important;
+  background-color: #aad3df !important; /* dwing Leaflet tot zelfde kleur */
+  background: #aad3df !important;
+  border: none !important;
 }

@@ -1,74 +1,47 @@
-import { useEffect, useRef } from "react";
-import L from "leaflet";
+import React from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "./lib/leaflet.terminator.min.js";
+import L from "leaflet";
 
-export default function App() {
-  const mapRef = useRef(null);
-  const terminatorRef = useRef(null);
+// Marker icoon instellen (zodat het pinnetje zichtbaar is)
+const markerIcon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
 
-  useEffect(() => {
-    if (!mapRef.current) return;
-    if (mapRef.current._leaflet_id) mapRef.current._leaflet_id = null;
-
-    // 🌍 Kaart aanmaken
-    const map = L.map(mapRef.current, {
-      center: [20, 0],
-      zoom: 2,
-      minZoom: 2,
-      maxZoom: 8,
-      worldCopyJump: false,
-      noWrap: true,
-    });
-
-    // 🗺️ Basis-tiles
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 8,
-      attribution: "&copy; OpenStreetMap",
-      noWrap: true,
-    }).addTo(map);
-
-    // 🌗 Terminator in het overlayPane (boven de tiles)
-    if (typeof L.terminator === "function") {
-      const terminator = L.terminator({
-        fillOpacity: 0.35,   // transparantie
-        color: "#000000",
-        weight: 0,
-        interactive: false,
-        pane: "overlayPane", // overlayPane zit boven tilePane
-      });
-      terminator.addTo(map);
-      terminatorRef.current = terminator;
-
-      // update elke minuut
-      const interval = setInterval(() => {
-        const updated = L.terminator({
-          fillOpacity: 0.35,
-          color: "#000000",
-          weight: 0,
-          interactive: false,
-          pane: "overlayPane",
-        });
-        terminatorRef.current.setLatLngs(updated.getLatLngs());
-      }, 60000);
-
-      return () => clearInterval(interval);
-    } else {
-      console.error("❌ Leaflet.Terminator niet geladen!");
-    }
-  }, []);
-
+// Hoofdcomponent
+function App() {
   return (
-    <div
-      ref={mapRef}
-      id="map"
-      style={{
-        height: "100vh",
-        width: "100vw",
-        backgroundColor: "#aad3df",
-        margin: 0,
-        padding: 0,
-      }}
-    />
+    <MapContainer
+      center={[10, -15]}                // middenpositie (mooi evenwicht)
+      zoom={2.55}                       // perfecte zoom volgens je screenshot
+      minZoom={2.5}
+      maxZoom={6}
+      zoomSnap={0.1}
+      zoomDelta={0.1}
+      zoomControl={true}
+      worldCopyJump={false}
+      noWrap={true}
+      maxBounds={[[-82, -179.9], [82, 179.9]]}   // voorkomt scrollen naar blauw
+      maxBoundsViscosity={1.0}                   // houdt kaart vast binnen grenzen
+      dragging={true}
+      inertia={false}
+      style={{ height: "100vh", width: "100vw" }} // volledig scherm
+    >
+      <TileLayer
+        attribution='&copy; OpenStreetMap contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        noWrap={true}
+      />
+
+      {/* Testmarker */}
+      <Marker position={[10, -15]} icon={markerIcon}>
+        <Popup>Marker</Popup>
+      </Marker>
+    </MapContainer>
   );
 }
+
+export default App;
