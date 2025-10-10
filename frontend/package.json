@@ -10,9 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@joergdietrich/leaflet.terminator": "github:joergdietrich/Leaflet.Terminator",
     "leaflet": "^1.9.4",
     "leaflet-rotatedmarker": "^0.2.0",
-    "leaflet-terminator": "^0.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-leaflet": "^5.0.0",

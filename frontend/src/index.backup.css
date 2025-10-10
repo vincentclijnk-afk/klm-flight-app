@@ -1,0 +1,29 @@
+/* Vul de hele pagina en geef alles dezelfde oceaankleur */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #aad3df;   /* ← jouw perfecte oceaankleur */
+  overflow: hidden;
+}
+
+/* Leaflet-kaart fullscreen + zelfde achtergrondkleur */
+.leaflet-container {
+  position: fixed !important;
+  inset: 0;                /* top:0; right:0; bottom:0; left:0 */
+  width: 100vw !important;
+  height: 100vh !important;
+  background: #aad3df !important;
+  z-index: 0;
+}
+
+/* Ook de onderliggende panes/tiles dezelfde kleur (voorkomt grijze randen) */
+.leaflet-tile-container,
+.leaflet-pane,
+.leaflet-pane > canvas,
+.leaflet-pane > svg {
+  background: #aad3df !important;
+}

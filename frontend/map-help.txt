@@ -1,0 +1,28 @@
+🗺️  KLM Flight App - Kaart Backup & Herstel Handleiding
+======================================================
+
+Gebruik deze twee commando's om snel de kaart te beheren:
+
+1️⃣  Opslaan van huidige werkende kaart:
+    save-map
+    ➜ Maakt een backup van:
+       • src/App.jsx  →  src/App.working.backup.jsx
+       • src/index.css  →  src/index.working.backup.css
+
+2️⃣  Herstellen van de laatst opgeslagen werkende kaart:
+    restore-map
+    ➜ Zet de back-up bestanden terug en start de app opnieuw.
+
+------------------------------------------------------
+📦 Bestanden betrokken bij de backup:
+    ~/klm-flight-app/frontend/src/App.jsx
+    ~/klm-flight-app/frontend/src/index.css
+
+💾 Back-ups opgeslagen als:
+    App.working.backup.jsx
+    index.working.backup.css
+
+🧠 Tip:
+    • Gebruik `save-map` zodra de kaart goed werkt.
+    • Gebruik `restore-map` als er iets misgaat.
+------------------------------------------------------
