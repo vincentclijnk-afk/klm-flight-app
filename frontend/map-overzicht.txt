@@ -1,4 +1,31 @@
 ===============================
+Laatste update: 2025-10-10 14:34
+===============================
+SAMENVATTING (huidige status)
+Projectmap: /data/data/com.termux/files/home/klm-flight-app/frontend
+Laatste backup: frontend_backup_2025-10-10_14-28-17.zip (5 minuten geleden)
+
+Git laatste commit:
+Commit: 063d596 | Auto-sync: 2025-10-10_14-28-17 (6 minutes ago)
+Git status:
+ M ../tools/map-tools.sh
+?? ../.config/
+?? ../.env
+?? ../backups/
+?? map-overzicht.txt.new
+?? ../node_modules/
+?? ../package-lock.json
+?? ../package.json
+?? ../server.js
+?? ../tools/map-tools.log
+---
+LOGBOEK (sessie 2025-10-10 14:34)
+Notities: commit-info test toegevoegd aan overzicht
+Gewijzigde bestanden deze sessie:
+ - tools/map-tools.sh
+===============================
+
+===============================
 Laatste update: 2025-10-10 14:28
 ===============================
 SAMENVATTING (huidige status)
