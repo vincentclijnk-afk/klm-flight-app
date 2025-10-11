@@ -1,117 +1,139 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-function getSubsolarPoint(date = new Date()) {
-  const dayOfYear = Math.floor(
-    (Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) -
-      Date.UTC(date.getUTCFullYear(), 0, 0)) /
-      86400000
-  );
-  const minutes =
-    date.getUTCHours() * 60 + date.getUTCMinutes() + date.getUTCSeconds() / 60;
-  const γ = (2 * Math.PI * (dayOfYear - 1 + minutes / 1440)) / 365;
+// ☀️ Bereken huidige zonpositie (gecorrigeerd)
+function calculateSunPosition() {
+  const now = new Date();
+  const rad = Math.PI / 180;
+  const jd = now.getTime() / 86400000 + 2440587.5;
+  const n = jd - 2451545.0;
 
-  const EoT =
-    229.18 *
-    (0.000075 +
-      0.001868 * Math.cos(γ) -
-      0.032077 * Math.sin(γ) -
-      0.014615 * Math.cos(2 * γ) -
-      0.040849 * Math.sin(2 * γ));
+  const Ls = (280.46 + 0.9856474 * n) % 360;
+  const g = (357.528 + 0.9856003 * n) % 360;
+  const lambda = Ls + 1.915 * Math.sin(g * rad) + 0.02 * Math.sin(2 * g * rad);
+  const epsilon = 23.439 - 0.0000004 * n;
+  const dec = Math.asin(Math.sin(epsilon * rad) * Math.sin(lambda * rad)) / rad;
 
-  const δ =
-    0.006918 -
-    0.399912 * Math.cos(γ) +
-    0.070257 * Math.sin(γ) -
-    0.006758 * Math.cos(2 * γ) +
-    0.000907 * Math.sin(2 * γ) -
-    0.002697 * Math.cos(3 * γ) +
-    0.00148 * Math.sin(3 * γ);
+  // ✅ Zon beweegt van oost naar west over de dag
+  const timeUTC = now.getUTCHours() + now.getUTCMinutes() / 60;
+  const lng = (180 - (timeUTC / 24) * 360); // Correctie voor richting
 
-  const lat = (δ * 180) / Math.PI;
-  const lon = ((720 - minutes - EoT) / 4 + 540) % 360 - 180;
-  return { lat, lon };
+  const lat = dec;
+  console.log("Zonpositie:", lat.toFixed(2), lng.toFixed(2));
+  return [lat, lng];
 }
 
-function createTerminator(date = new Date()) {
-  const points = [];
-  const { lat: decl } = getSubsolarPoint(date);
-  const declRad = (decl * Math.PI) / 180;
-
-  for (let lon = -180; lon <= 180; lon += 2) {
-    const lonRad = (lon * Math.PI) / 180;
-    const latRad = Math.atan(-Math.cos(lonRad) / Math.tan(declRad));
-    points.push([latRad * (180 / Math.PI), lon]);
-  }
-  const ring = points.concat(points[0]);
-  return L.polygon(ring, {
-    color: "none",
-    fillColor: "#334155",
-    fillOpacity: 0.35,
-    interactive: false,
-  });
-}
-
-function DayNightAndSun() {
+// ☀️ Zon als marker
+function SunMarker() {
   const map = useMap();
 
   useEffect(() => {
     if (!map) return;
 
-    let terminator = createTerminator(new Date());
-    terminator.addTo(map);
-
-    const sunIcon = L.divIcon({
+    const icon = L.divIcon({
+      html: `<div style="
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, #FFD700 40%, #FFA500 80%);
+        border-radius: 50%;
+        border: 3px solid #FF8C00;
+        box-shadow: 0 0 20px rgba(255,215,0,0.9);
+      "></div>`,
       className: "",
-      html:
-        '<div style="width:36px;height:36px;border-radius:50%;' +
-        'background: radial-gradient(circle, #ffd54d 0%, #ffb300 60%, #ff8f00 100%);' +
-        'box-shadow:0 0 18px 6px rgba(255,191,0,0.55);"></div>',
-      iconSize: [36, 36],
-      iconAnchor: [18, 18],
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
     });
 
-    const { lat, lon } = getSubsolarPoint(new Date());
-    const sunMarker = L.marker([lat, lon], { icon: sunIcon, interactive: false }).addTo(map);
-
-    const update = () => {
-      const now = new Date();
-      if (terminator) map.removeLayer(terminator);
-      terminator = createTerminator(now);
-      terminator.addTo(map);
-
-      const s = getSubsolarPoint(now);
-      sunMarker.setLatLng([s.lat, s.lon]);
+    const drawSun = () => {
+      const [lat, lng] = calculateSunPosition();
+      if (map._sunMarker) map.removeLayer(map._sunMarker);
+      const marker = L.marker([lat, lng], { icon });
+      marker.addTo(map);
+      map._sunMarker = marker;
     };
 
-    const timer = setInterval(update, 60000);
-    update();
-
-    return () => {
-      clearInterval(timer);
-      if (terminator) map.removeLayer(terminator);
-      if (sunMarker) map.removeLayer(sunMarker);
-    };
+    drawSun();
+    const interval = setInterval(drawSun, 60000);
+    return () => clearInterval(interval);
   }, [map]);
 
   return null;
 }
 
+// 🌒 Dag/nachtlaag — gesynchroniseerd met zon
+function DayNightLayer() {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+
+    const drawLayer = () => {
+      const coords = [];
+      const now = new Date();
+      const rad = Math.PI / 180;
+      const jd = now.getTime() / 86400000 + 2440587.5;
+      const n = jd - 2451545.0;
+
+      const Ls = (280.46 + 0.9856474 * n) % 360;
+      const g = (357.528 + 0.9856003 * n) % 360;
+      const lambda = Ls + 1.915 * Math.sin(g * rad) + 0.02 * Math.sin(2 * g * rad);
+      const epsilon = 23.439 - 0.0000004 * n;
+      const dec = Math.asin(Math.sin(epsilon * rad) * Math.sin(lambda * rad)) / rad;
+
+      // Zonpositie gebruiken voor de terminatorlijn
+      const [sunLat, sunLng] = calculateSunPosition();
+
+      for (let lng = -180; lng <= 180; lng += 2) {
+        const hourAngle = (lng - sunLng) * rad;
+        const lat = Math.atan(-Math.cos(hourAngle) / Math.tan(dec * rad)) / rad;
+        coords.push([lat, lng]);
+      }
+
+      if (map._terminatorLayer) map.removeLayer(map._terminatorLayer);
+
+      const polygonCoords = [coords.concat([[90, 180], [90, -180]])];
+      const layer = L.polygon(polygonCoords, {
+        color: "none",
+        fillColor: "#001d3d",
+        fillOpacity: 0.45,
+        interactive: false,
+      });
+
+      layer.addTo(map);
+      map._terminatorLayer = layer;
+    };
+
+    drawLayer();
+    const interval = setInterval(drawLayer, 60000);
+    return () => clearInterval(interval);
+  }, [map]);
+
+  return null;
+}
+
+// 🌍 Hoofdcomponent
 export default function App() {
   return (
     <MapContainer
-      style={{ height: "100vh", width: "100vw" }}
       center={[0, 0]}
-      zoom={2}
-      zoomControl={true}
-      preferCanvas={true}
-      worldCopyJump={false}
-      attributionControl={false}
+      zoom={3}
+      style={{ height: "100vh", width: "100vw" }}
+      worldCopyJump={true}
+      zoomControl={false}
+      maxBounds={[
+        [-90, -180],
+        [90, 180],
+      ]}
+      maxBoundsViscosity={1.0}
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <DayNightAndSun />
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution="&copy; OpenStreetMap contributors"
+      />
+      <DayNightLayer />
+      <SunMarker />
     </MapContainer>
   );
 }
