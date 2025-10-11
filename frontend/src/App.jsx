@@ -1,10 +1,8 @@
-// frontend/src/App.jsx
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// ---------- Hulp: bereken positie zon ----------
 function getSubsolarPoint(date = new Date()) {
   const dayOfYear = Math.floor(
     (Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) -
@@ -37,7 +35,6 @@ function getSubsolarPoint(date = new Date()) {
   return { lat, lon };
 }
 
-// ---------- Maak eigen terminatorlaag ----------
 function createTerminator(date = new Date()) {
   const points = [];
   const { lat: decl } = getSubsolarPoint(date);
@@ -61,6 +58,8 @@ function DayNightAndSun() {
   const map = useMap();
 
   useEffect(() => {
+    if (!map) return;
+
     let terminator = createTerminator(new Date());
     terminator.addTo(map);
 
@@ -79,7 +78,7 @@ function DayNightAndSun() {
 
     const update = () => {
       const now = new Date();
-      map.removeLayer(terminator);
+      if (terminator) map.removeLayer(terminator);
       terminator = createTerminator(now);
       terminator.addTo(map);
 
@@ -92,39 +91,26 @@ function DayNightAndSun() {
 
     return () => {
       clearInterval(timer);
-      map.removeLayer(terminator);
-      map.removeLayer(sunMarker);
+      if (terminator) map.removeLayer(terminator);
+      if (sunMarker) map.removeLayer(sunMarker);
     };
   }, [map]);
 
   return null;
 }
 
-// ---------- Kaart ----------
 export default function App() {
-  const bounds = [
-    [-60, -180],
-    [80, 180],
-  ];
-
   return (
     <MapContainer
-      className="map-root"
-      center={[10, 0]}
-      zoom={3}
-      minZoom={2.4}
-      maxBounds={bounds}
-      maxBoundsViscosity={1.0}
-      worldCopyJump={false}
+      style={{ height: "100vh", width: "100vw" }}
+      center={[0, 0]}
+      zoom={2}
       zoomControl={true}
       preferCanvas={true}
+      worldCopyJump={false}
       attributionControl={false}
     >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        noWrap={true}
-        bounds={bounds}
-      />
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <DayNightAndSun />
     </MapContainer>
   );
