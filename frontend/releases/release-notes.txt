@@ -56,3 +56,4 @@ Volgende versie: v1.1 (gepland)
 - Nachtmodus-optie
 v1.4 | 2025-10-14 | dit is aangemaakt voor een test automaitisch script
 v1.3 | 2025-10-14 | test voor script
+v1.4 | 2025-10-14 | test voor script
