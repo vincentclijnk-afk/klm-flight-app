@@ -1,0 +1,58 @@
+# ✈️ KLM-FLIGHT-APP — Release Notes
+
+Hier vind je een overzicht van alle versies en wijzigingen in de app.  
+Elke regel bevat de versie, datum en een korte beschrijving van de update.
+
+
+───────────────────────────────────────────────
+✈️  KLM-FLIGHT-APP – Release Notes (automatisch bijgewerkt)
+───────────────────────────────────────────────
+
+⚙️  Over dit bestand:
+Deze release notes worden automatisch aangevuld door de scripts:
+- create-changelog.sh  (Linux/macOS)
+- create-changelog.ps1 (Windows PowerShell)
+
+Elke keer dat je een nieuwe changelog aanmaakt, wordt er automatisch een nieuwe regel toegevoegd.
+Zo blijft dit bestand altijd actueel zonder handmatige bewerking.
+
+📘 Locatie van changelogs:
+  releases/changelog/
+
+Gebruik:
+  ./create-changelog.sh v1.3     ← Linux/macOS
+  .\create-changelog.ps1 v1.3    ← Windows
+
+───────────────────────────────────────────────
+Versie | Datum       | Samenvatting
+───────────────────────────────────────────────
+
+==============================
+KLM-FLIGHT-APP – Release Notes
+==============================
+
+Versie: v1.0
+Datum: 2025-10-14
+Type: Stable Mock Release
+Beschrijving:
+Eerste stabiele build van de KLM Flight App met mockdata fallback.
+Schiphol API-integratie nog in afwachting.
+
+Belangrijkste features:
+- Vertrekken/Aankomsten toggle met kleurthema
+- Oceaanachtergrond + vliegtuiganimatie
+- Auto-refresh en handmatige verversing
+- Statusindicator met pulse en countdown
+- Fallback naar mockdata als Schiphol-API niet reageert
+
+Volgende stap:
+- Schiphol API integreren zodra toegang beschikbaar is
+- Dynamische vliegtuiganimatie aanpassen voor aankomsten
+
+==============================
+Volgende versie: v1.1 (gepland)
+==============================
+- Verbeterde animatie en API-integratie
+- Nachtmodus-optie
+v1.4 | 2025-10-14 | dit is aangemaakt voor een test automaitisch script
+v1.3 | 2025-10-14 | test voor script

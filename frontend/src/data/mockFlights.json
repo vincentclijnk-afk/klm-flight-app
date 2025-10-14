@@ -1,0 +1,134 @@
+[
+  {
+    "flightId": "KL877",
+    "airline": {
+      "iata": "KL",
+      "name": "KLM Royal Dutch Airlines"
+    },
+    "route": {
+      "origin": {
+        "iata": "AMS",
+        "icao": "EHAM",
+        "city": "Amsterdam",
+        "lat": 52.3086,
+        "lon": 4.7639
+      },
+      "destination": {
+        "iata": "BOM",
+        "icao": "VABB",
+        "city": "Mumbai",
+        "lat": 19.0896,
+        "lon": 72.8656
+      }
+    },
+    "flightDirection": "DEP",
+    "scheduledTimeUTC": "2025-10-14T11:05:00Z",
+    "actualTimeUTC": "2025-10-14T11:22:00Z",
+    "status": "DEPARTED",
+    "aircraftType": "B77W",
+    "progress": 0.42,
+    "position": {
+      "lat": 35.3,
+      "lon": 55.1
+    }
+  },
+  {
+    "flightId": "KL878",
+    "airline": {
+      "iata": "KL",
+      "name": "KLM Royal Dutch Airlines"
+    },
+    "route": {
+      "origin": {
+        "iata": "BOM",
+        "icao": "VABB",
+        "city": "Mumbai",
+        "lat": 19.0896,
+        "lon": 72.8656
+      },
+      "destination": {
+        "iata": "AMS",
+        "icao": "EHAM",
+        "city": "Amsterdam",
+        "lat": 52.3086,
+        "lon": 4.7639
+      }
+    },
+    "flightDirection": "ARR",
+    "scheduledTimeUTC": "2025-10-14T20:45:00Z",
+    "actualTimeUTC": "2025-10-14T20:55:00Z",
+    "status": "ENROUTE",
+    "aircraftType": "B77W",
+    "progress": 0.78,
+    "position": {
+      "lat": 40.7,
+      "lon": 35.8
+    }
+  },
+  {
+    "flightId": "6E024",
+    "airline": {
+      "iata": "6E",
+      "name": "IndiGo Airlines"
+    },
+    "route": {
+      "origin": {
+        "iata": "DEL",
+        "icao": "VIDP",
+        "city": "Delhi",
+        "lat": 28.5562,
+        "lon": 77.1000
+      },
+      "destination": {
+        "iata": "AMS",
+        "icao": "EHAM",
+        "city": "Amsterdam",
+        "lat": 52.3086,
+        "lon": 4.7639
+      }
+    },
+    "flightDirection": "ARR",
+    "scheduledTimeUTC": "2025-10-14T18:10:00Z",
+    "actualTimeUTC": "2025-10-14T18:20:00Z",
+    "status": "ENROUTE",
+    "aircraftType": "A321XLR",
+    "progress": 0.66,
+    "position": {
+      "lat": 42.9,
+      "lon": 29.4
+    }
+  },
+  {
+    "flightId": "6E025",
+    "airline": {
+      "iata": "6E",
+      "name": "IndiGo Airlines"
+    },
+    "route": {
+      "origin": {
+        "iata": "AMS",
+        "icao": "EHAM",
+        "city": "Amsterdam",
+        "lat": 52.3086,
+        "lon": 4.7639
+      },
+      "destination": {
+        "iata": "DEL",
+        "icao": "VIDP",
+        "city": "Delhi",
+        "lat": 28.5562,
+        "lon": 77.1000
+      }
+    },
+    "flightDirection": "DEP",
+    "scheduledTimeUTC": "2025-10-14T09:55:00Z",
+    "actualTimeUTC": "2025-10-14T10:05:00Z",
+    "status": "DEPARTED",
+    "aircraftType": "A321XLR",
+    "progress": 0.33,
+    "position": {
+      "lat": 39.8,
+      "lon": 56.2
+    }
+  }
+]
