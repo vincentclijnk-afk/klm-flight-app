@@ -34,21 +34,37 @@ mkdir -p "$CHANGELOG_DIR"
 # 📄 Maak nieuw changelogbestand
 CHANGELOG_FILE="$CHANGELOG_DIR/$VERSION.md"
 
-cat <<EOF > "$CHANGELOG_FILE"
-# 📦 Changelog $VERSION
-📅 Datum: $DATE
+cat > "$CHANGELOG_FILE" <<EOF
+# ✈️ KLM-FLIGHT-APP — Changelog $VERSION
+**Datum:** $DATE
 
-## ✨ Nieuw
--
+---
 
-## 🐞 Opgelost
--
+## 🚀 Nieuwe functies
+Beschrijf nieuwe onderdelen of uitbreidingen van de app:
+- 
 
-## 🚧 Bekende problemen
--
+## 🧩 Verbeteringen
+Noem kleine verbeteringen, optimalisaties of visuele aanpassingen:
+- 
 
-## 📘 Notities
--
+## 🐞 Opgeloste bugs
+Wat is er verholpen sinds de vorige versie:
+- 
+
+## ⚙️ Technische wijzigingen
+Interne verbeteringen, afhankelijkheden, of build-updates:
+- 
+
+## 🧱 Baseline / Context
+Altijd aanwezig voor deze fase van de app:
+- Schiphol API fallback actief  
+- Mockdata AMS–DEL / AMS–BOM
+
+---
+
+✈️ **KLM-FLIGHT-APP** – interne changelogtemplate  
+_Automatisch gegenereerd: $DATE_
 EOF
 
 echo "✅ Nieuw changelogbestand aangemaakt: $CHANGELOG_FILE"
