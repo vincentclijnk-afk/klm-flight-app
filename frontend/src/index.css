@@ -1,99 +1,142 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* 🌊 Diepere oceaan met zichtbare golfbeweging en zachte glans */
-.bg-ocean {
-  background: linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.05) 40%,
-      rgba(0, 0, 0, 0) 100%
-    ),
-    linear-gradient(135deg, #b3d8f0 0%, #a3cde8 30%, #9ac7e5 70%, #b4dff5 100%);
-  background-size: 300% 300%;
-  background-blend-mode: screen;
-}
-@keyframes waves {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 52%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-.animate-waves {
-  animation: waves 25s ease-in-out infinite;
+/* 🎨 Algemene stijl */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: linear-gradient(to bottom, #d8ecff, #c6e0f5);
+  min-height: 100vh;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* ✈️ Vliegtuig animatie met fade-shadow */
-@keyframes planeFly {
-  0% {
-    left: -40px;
-    top: 20px;
-    opacity: 0;
-    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0.6));
-  }
-  5% {
-    opacity: 1;
-  }
-  25% {
-    top: 17px;
-  }
-  50% {
-    top: 23px;
-  }
-  75% {
-    top: 17px;
-    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0.3));
-  }
-  100% {
-    left: 110%;
-    top: 20px;
-    opacity: 0;
-    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0));
-  }
+.app-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  text-align: center;
 }
-.animate-planeFly {
-  position: fixed;
-  top: 20px;
-  left: -40px;
+
+/* 🧭 Titel */
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
-  animation: planeFly 3s ease-in-out forwards;
-  z-index: 70;
+  justify-content: center;
+  gap: 10px;
 }
 
-/* 💨 Condensstreep */
-.planeTrail {
-  position: fixed;
-  top: 25px;
-  left: 0;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(173, 216, 255, 0.9),
-    rgba(200, 230, 255, 0.6),
-    rgba(255, 255, 255, 0)
-  );
-  box-shadow: 0 0 6px rgba(150, 200, 255, 0.7);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 60;
-  animation: trailFade 3s ease-out forwards;
+/* 🔘 Knoppen */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
 }
-@keyframes trailFade {
-  0% {
-    opacity: 0.9;
-  }
-  50% {
-    opacity: 0.6;
-  }
-  100% {
+
+button {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #005fa3;
+  transform: translateY(-1px);
+}
+
+/* 🔄 Laadstatus */
+p {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.error {
+  color: #d62828;
+  background-color: #ffe6e6;
+  border-radius: 8px;
+  padding: 10px;
+  display: inline-block;
+}
+
+/* 🧳 Vluchtlijst */
+.flights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* 🪪 Vluchtkaartjes */
+.flight-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.flight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* ✈️ Tekstuitlijning in kaart */
+.flight-route {
+  text-align: left;
+  flex: 1;
+  font-weight: 600;
+}
+
+.flight-info {
+  flex: 1;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.flight-status {
+  text-align: right;
+  flex: 1;
+  font-size: 0.9rem;
+  color: #005fa3;
+}
+
+/* 📡 Footer */
+footer {
+  margin-top: 25px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* ⏳ Simpele fade animatie */
+@keyframes fadeIn {
+  from {
     opacity: 0;
+    transform: translateY(6px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.flight-card {
+  animation: fadeIn 0.3s ease;
 }
