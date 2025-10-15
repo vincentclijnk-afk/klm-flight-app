@@ -1,142 +1,155 @@
-/* 🎨 Algemene stijl */
+/* 🌊 Effen oceaanblauw (geen strepen meer) */
 body {
+  background-color: #7cc0e8;
   margin: 0;
-  padding: 0;
-  font-family: "Inter", system-ui, sans-serif;
-  background: linear-gradient(to bottom, #d8ecff, #c6e0f5);
-  min-height: 100vh;
-  color: #222;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.app-container {
-  max-width: 900px;
-  width: 100%;
-  margin: 40px auto;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  font-family: "Segoe UI", sans-serif;
+  color: #002b5c;
   text-align: center;
+  overflow-x: hidden;
 }
 
-/* 🧭 Titel */
-h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #003366;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+/* ✈️ Klein vliegtuigje in KLM-stijl met rookstreep */
+.plane-wrapper {
+  position: fixed;
+  top: 22px;
+  left: -120px;
+  width: 100%;
+  height: 40px;
+  overflow: visible;
 }
 
-/* 🔘 Knoppen */
+.plane-wrapper.fly .plane {
+  animation: fly 8s linear;
+}
+
+.plane-wrapper.fly .smoke {
+  opacity: 1;
+  animation: fadeSmoke 4s ease-in-out;
+}
+
+.plane {
+  position: absolute;
+  width: 60px;
+  height: auto;
+  opacity: 0.95;
+}
+
+/* ✈️ Nieuw herkenbaar vliegtuigje (SVG wordt geladen via App.jsx) */
+.plane path.body {
+  fill: #0072ce; /* KLM blauw */
+  stroke: #004b8d;
+  stroke-width: 0.5;
+}
+
+.plane path.wing {
+  fill: #0056b3;
+}
+
+.smoke {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  height: 2px;
+  width: 100vw;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+  opacity: 0;
+}
+
+@keyframes fly {
+  0% {
+    transform: translateX(-80px) translateY(0) rotate(2deg);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-3px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(3px);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-2px);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0);
+  }
+}
+
+@keyframes fadeSmoke {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 🧭 Layout en knoppen */
+.app-container {
+  padding-top: 80px;
+}
+
 .controls {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 button {
-  background-color: #0077cc;
+  background-color: #0a3d91;
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
+  padding: 8px 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-button:hover {
-  background-color: #005fa3;
-  transform: translateY(-1px);
-}
-
-/* 🔄 Laadstatus */
-p {
   font-size: 0.95rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.api-status {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.api-status.on {
+  background-color: #0072ce;
+  color: white;
+}
+
+.api-status.off {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* 🧩 Melding en vluchtlijst */
+.test-message {
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.update-info {
+  font-size: 0.85rem;
   color: #333;
 }
 
-.error {
-  color: #d62828;
-  background-color: #ffe6e6;
-  border-radius: 8px;
-  padding: 10px;
-  display: inline-block;
-}
-
-/* 🧳 Vluchtlijst */
 .flights-list {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
   margin-top: 20px;
 }
 
-/* 🪪 Vluchtkaartjes */
 .flight-card {
   background: white;
+  padding: 10px 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  padding: 12px 18px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.flight-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-
-/* ✈️ Tekstuitlijning in kaart */
-.flight-route {
-  text-align: left;
-  flex: 1;
-  font-weight: 600;
-}
-
-.flight-info {
-  flex: 1;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #444;
-}
-
-.flight-status {
-  text-align: right;
-  flex: 1;
-  font-size: 0.9rem;
-  color: #005fa3;
-}
-
-/* 📡 Footer */
-footer {
-  margin-top: 25px;
-  font-size: 0.85rem;
-  color: #555;
-}
-
-/* ⏳ Simpele fade animatie */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.flight-card {
-  animation: fadeIn 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 280px;
 }

@@ -1,167 +1,115 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import "./index.css";
 
 function App() {
   const [flights, setFlights] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [direction, setDirection] = useState("D"); // D = Departures, A = Arrivals
-  const [useSchiphol, setUseSchiphol] = useState(true); // toggle voor live / mock
-
-  // Mockdata voor fallback of test
-  const mockFlights = [
-    {
-      id: "KLM0871",
-      route: "AMS → DEL",
-      airline: "KLM",
-      status: "Scheduled",
-      time: "10:25",
-    },
-    {
-      id: "KLM0877",
-      route: "AMS → BOM",
-      airline: "KLM",
-      status: "Departed",
-      time: "09:15",
-    },
-  ];
-
-  // Environment-variabelen uit .env
-  const appId = import.meta.env.VITE_APP_ID;
-  const appKey = import.meta.env.VITE_APP_KEY;
+  const [loading, setLoading] = useState(false);
+  const [apiAvailable, setApiAvailable] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const [testMessage, setTestMessage] = useState("");
 
   const fetchFlights = async () => {
     setLoading(true);
-    setError(null);
-
-    if (!useSchiphol) {
-      console.log("🧩 Mockmodus actief");
-      setFlights(mockFlights);
-      setLoading(false);
-      return;
-    }
+    setTestMessage("🧩 Test Schiphol API-verbinding...");
+    document.querySelector(".plane-wrapper")?.classList.add("fly");
 
     try {
-      console.log("📡 Ophalen van Schiphol API...");
-      const url = `https://api.schiphol.nl/public-flights/flights?flightDirection=${direction}&includedelays=false&page=0&sort=%2BscheduleTime`;
+      const res = await fetch(
+        `https://api.schiphol.nl/public-flights/flights?flightDirection=${direction}&includedelays=false&page=0&sort=%2BscheduleTime`,
+        {
+          headers: {
+            Accept: "application/json",
+            "app_id": import.meta.env.VITE_APP_ID,
+            "app_key": import.meta.env.VITE_APP_KEY,
+            ResourceVersion: "v4",
+          },
+        }
+      );
 
-      const response = await fetch(url, {
-        headers: {
-          "ResourceVersion": "v4",
-          "app_id": appId,
-          "app_key": appKey,
-        },
-      });
+      if (!res.ok) throw new Error("API reageert niet");
+      const data = await res.json();
 
-      if (!response.ok) {
-        throw new Error(`Schiphol API fout (${response.status})`);
-      }
-
-      const data = await response.json();
-      const lijst = data.flights || data.rows || [];
-
-      console.log(`✅ ${lijst.length} vluchten ontvangen van Schiphol`);
-      setFlights(lijst);
+      setFlights(data.flights?.slice(0, 5) || []);
+      setApiAvailable(true);
+      setTestMessage("✅ Schiphol API actief");
     } catch (err) {
-      console.warn("⚠️ Schiphol API mislukt:", err.message);
-      setError(err.message);
-      setFlights(mockFlights);
+      console.warn("API-fout, mockdata gebruikt:", err);
+      setFlights([
+        direction === "D"
+          ? { route: "AMS → DEL", airline: "KLM", status: "Scheduled", time: "10:25" }
+          : { route: "DEL → AMS", airline: "Air India", status: "Landed", time: "08:55" },
+      ]);
+      setApiAvailable(false);
+      setTestMessage("⚠️ Schiphol API niet beschikbaar, mockdata gebruikt");
     } finally {
       setLoading(false);
+      setLastUpdate(new Date().toLocaleTimeString());
+      setTimeout(() => document.querySelector(".plane-wrapper")?.classList.remove("fly"), 4000);
     }
   };
 
   useEffect(() => {
     fetchFlights();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [direction, useSchiphol]);
+  }, [direction]);
 
   return (
     <div className="app-container">
-      <h1>✈️ Vluchten vanuit Amsterdam</h1>
+      {/* ✈️ vliegtuig bovenin */}
+      <div className="plane-wrapper">
+        <svg
+          className="plane"
+          viewBox="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="#0A3D91"
+        >
+          <path d="M2 34 L42 34 L62 44 L58 46 L42 38 L2 38 Z" />
+          <path d="M10 28 L42 34 L10 40 Z" fill="#0056B3" />
+        </svg>
+        <div className="smoke"></div>
+      </div>
+
+      <h1>{direction === "D" ? "Vertrekken" : "Aankomsten"}</h1>
 
       <div className="controls">
-        <button onClick={() => setDirection(direction === "D" ? "A" : "D")}>
+        <button onClick={() => setDirection(direction === "D" ? "A" : "D")} disabled={loading}>
           {direction === "D"
             ? "Aankomsten (klik voor Vertrekken)"
             : "Vertrekken (klik voor Aankomsten)"}
         </button>
 
-        <button onClick={fetchFlights}>🔄 Verversen</button>
-
-        {/* 🟢🔴 Statusknop */}
-        <button
-          onClick={() => setUseSchiphol(!useSchiphol)}
-          style={{
-            backgroundColor: useSchiphol ? "#0077cc" : "#888",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
-          <span
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              backgroundColor: useSchiphol ? "#00c853" : "#d32f2f",
-              boxShadow: `0 0 6px ${useSchiphol ? "#00c853aa" : "#d32f2faa"}`,
-            }}
-          ></span>
-          {useSchiphol ? "Schiphol API actief" : "Mockdata actief"}
+        <button onClick={fetchFlights} disabled={loading}>
+          {loading ? "Bezig met verversen..." : "🔄 Verversen"}
         </button>
+
+        <div className={`api-status ${apiAvailable ? "on" : "off"}`}>
+          {apiAvailable ? "Schiphol API actief" : "Mockdata actief"}
+        </div>
       </div>
 
-      {loading && <p>⏳ Gegevens laden...</p>}
+      <div className="test-message">
+        {testMessage && <p>{testMessage}</p>}
+      </div>
 
-      {!loading && error && (
-        <p className="error">⚠️ Schiphol API niet bereikbaar — mockdata geladen</p>
-      )}
+      <div className="update-info">
+        {lastUpdate && <span>Laatste update: {lastUpdate}</span>}
+      </div>
 
       <div className="flights-list">
-        {!loading && flights.length > 0 ? (
-          flights.map((flight, index) => (
-            <div className="flight-card" key={index}>
-              <div className="flight-route">
-                <strong>
-                  {flight.route?.destinations?.[0] ||
-                    flight.destination ||
-                    flight.route ||
-                    "Onbekend"}
-                </strong>
-              </div>
-              <div className="flight-info">
-                <span>{flight.prefixICAO || flight.airline || "KLM"}</span>
-                <span>{flight.flightName || flight.id || "-"}</span>
-              </div>
-              <div className="flight-status">
-                <span>
-                  {flight.publicFlightState?.flightStates?.[0] ||
-                    flight.status ||
-                    "Unknown"}
-                </span>
-                <span>
-                  {flight.scheduleDateTime?.substring(11, 16) ||
-                    flight.time ||
-                    "--:--"}
-                </span>
-              </div>
+        {loading ? (
+          <p>Vluchten laden...</p>
+        ) : (
+          flights.map((f, i) => (
+            <div key={i} className="flight-card">
+              <strong>{f.route}</strong>
+              <span>{f.airline}</span>
+              <span>
+                {f.status} <b>{f.time}</b>
+              </span>
             </div>
           ))
-        ) : (
-          !loading && <p>Geen vluchten gevonden</p>
         )}
       </div>
-
-      <footer>
-        <p>
-          {useSchiphol
-            ? "📡 Live Schiphol data"
-            : "📁 Mockdata (testmodus)"}{" "}
-          • Richting: {direction === "D" ? "Vertrekkend" : "Aankomend"}
-        </p>
-      </footer>
     </div>
   );
 }
