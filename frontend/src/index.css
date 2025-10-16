@@ -1,155 +1,99 @@
-/* 🌊 Effen oceaanblauw (geen strepen meer) */
-body {
-  background-color: #7cc0e8;
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  color: #002b5c;
-  text-align: center;
-  overflow-x: hidden;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* ✈️ Klein vliegtuigje in KLM-stijl met rookstreep */
-.plane-wrapper {
-  position: fixed;
-  top: 22px;
-  left: -120px;
-  width: 100%;
-  height: 40px;
-  overflow: visible;
+/* 🌊 Diepere oceaan met zichtbare golfbeweging en zachte glans */
+.bg-ocean {
+  background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 40%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(135deg, #b3d8f0 0%, #a3cde8 30%, #9ac7e5 70%, #b4dff5 100%);
+  background-size: 300% 300%;
+  background-blend-mode: screen;
 }
-
-.plane-wrapper.fly .plane {
-  animation: fly 8s linear;
-}
-
-.plane-wrapper.fly .smoke {
-  opacity: 1;
-  animation: fadeSmoke 4s ease-in-out;
-}
-
-.plane {
-  position: absolute;
-  width: 60px;
-  height: auto;
-  opacity: 0.95;
-}
-
-/* ✈️ Nieuw herkenbaar vliegtuigje (SVG wordt geladen via App.jsx) */
-.plane path.body {
-  fill: #0072ce; /* KLM blauw */
-  stroke: #004b8d;
-  stroke-width: 0.5;
-}
-
-.plane path.wing {
-  fill: #0056b3;
-}
-
-.smoke {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  height: 2px;
-  width: 100vw;
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-  opacity: 0;
-}
-
-@keyframes fly {
+@keyframes waves {
   0% {
-    transform: translateX(-80px) translateY(0) rotate(2deg);
-  }
-  25% {
-    transform: translateX(25vw) translateY(-3px);
+    background-position: 0% 50%;
   }
   50% {
-    transform: translateX(50vw) translateY(3px);
-  }
-  75% {
-    transform: translateX(75vw) translateY(-2px);
+    background-position: 100% 52%;
   }
   100% {
-    transform: translateX(100vw) translateY(0);
+    background-position: 0% 50%;
   }
 }
+.animate-waves {
+  animation: waves 25s ease-in-out infinite;
+}
 
-@keyframes fadeSmoke {
+/* ✈️ Vliegtuig animatie met fade-shadow */
+@keyframes planeFly {
   0% {
+    left: -40px;
+    top: 20px;
+    opacity: 0;
+    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0.6));
+  }
+  5% {
     opacity: 1;
+  }
+  25% {
+    top: 17px;
+  }
+  50% {
+    top: 23px;
+  }
+  75% {
+    top: 17px;
+    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0.3));
+  }
+  100% {
+    left: 110%;
+    top: 20px;
+    opacity: 0;
+    filter: drop-shadow(0px 3px 4px rgba(120, 180, 255, 0));
+  }
+}
+.animate-planeFly {
+  position: fixed;
+  top: 20px;
+  left: -40px;
+  display: flex;
+  align-items: center;
+  animation: planeFly 3s ease-in-out forwards;
+  z-index: 70;
+}
+
+/* 💨 Condensstreep */
+.planeTrail {
+  position: fixed;
+  top: 25px;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(173, 216, 255, 0.9),
+    rgba(200, 230, 255, 0.6),
+    rgba(255, 255, 255, 0)
+  );
+  box-shadow: 0 0 6px rgba(150, 200, 255, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 60;
+  animation: trailFade 3s ease-out forwards;
+}
+@keyframes trailFade {
+  0% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.6;
   }
   100% {
     opacity: 0;
   }
-}
-
-/* 🧭 Layout en knoppen */
-.app-container {
-  padding-top: 80px;
-}
-
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-button {
-  background-color: #0a3d91;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.api-status {
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.api-status.on {
-  background-color: #0072ce;
-  color: white;
-}
-
-.api-status.off {
-  background-color: #e74c3c;
-  color: white;
-}
-
-/* 🧩 Melding en vluchtlijst */
-.test-message {
-  margin: 10px 0;
-  font-weight: 500;
-}
-
-.update-info {
-  font-size: 0.85rem;
-  color: #333;
-}
-
-.flights-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.flight-card {
-  background: white;
-  padding: 10px 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 280px;
 }
