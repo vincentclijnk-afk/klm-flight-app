@@ -29,19 +29,35 @@ function App() {
   // Environment-variabelen uit .env
   const appId = import.meta.env.VITE_APP_ID;
   const appKey = import.meta.env.VITE_APP_KEY;
-
-  const fetchFlights = async () => {
-    setLoading(true);
+const fetchFlights = async () => {
+  try {
     setError(null);
+    setShowPlane(true);
+    setFlights([]);
+    setLastUpdateTime("Bezig met laden...");
 
-    if (!useSchiphol) {
-      console.log("🧩 Mockmodus actief");
-      setFlights(mockFlights);
-      setLoading(false);
-      return;
+    const response = await fetch(`${import.meta.env.VITE_SCHIPHOL_API_URL}/${flightDirection === "D" ? "flights" : "flights/arrivals"}?app_id=${import.meta.env.VITE_SCHIPHOL_APP_ID}&app_key=${import.meta.env.VITE_SCHIPHOL_APP_KEY}&includedelays=false`, {
+      headers: {
+        resourceversion: "v4",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`API-fout: ${response.status}`);
     }
 
-    try {
+    const data = await response.json();
+
+    // Test: toon aantal vluchten op het scherm
+    setFlights(data.flights || []);
+    setLastUpdateTime(`Geladen ${new Date().toLocaleTimeString()}`);
+  } catch (err) {
+    console.error(err);
+    setError("Kon vluchtinformatie niet laden.");
+    setShowPlane(false);
+  }
+};
+   try {
       console.log("📡 Ophalen van Schiphol API...");
       const url = `https://api.schiphol.nl/public-flights/flights?flightDirection=${direction}&includedelays=false&page=0&sort=%2BscheduleTime`;
 
@@ -79,7 +95,11 @@ function App() {
   return (
     <div className="app-container">
       <h1>✈️ Vluchten vanuit Amsterdam</h1>
-
+{flights.length > 0 && (
+  <p style={{ marginTop: "1rem", color: "darkblue" }}>
+    ✈️ Aantal ontvangen vluchten: {flights.length}
+  </p>
+)}
       <div className="controls">
         <button onClick={() => setDirection(direction === "D" ? "A" : "D")}>
           {direction === "D"
