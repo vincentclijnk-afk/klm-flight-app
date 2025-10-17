@@ -1,50 +1,37 @@
-// server.js
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
 
-// 🚦 CORS openzetten (alleen tijdens dev)
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
+const PORT = 3001;
 
-const BASE_URL = "https://api.schiphol.nl/public-flights";
-
-// 🔒 Proxy endpoint: /api/flights
-app.get("/api/:endpoint", async (req, res) => {
+app.get("/api/flights", async (req, res) => {
   try {
-    const { endpoint } = req.params;
-    const query = new URLSearchParams(req.query).toString();
-    const url = `${BASE_URL}/${endpoint}?${query}`;
+    const direction = req.query.direction || "D";
+    const url = `${process.env.VITE_SCHIPHOL_API_URL}?flightDirection=${direction}`;
 
     const response = await fetch(url, {
       headers: {
-        "app_id": process.env.SCHIPHOL_APP_ID,
-        "app_key": process.env.SCHIPHOL_APP_KEY,
-        "ResourceVersion": "v4",
-        "Accept": "application/json"
-      }
+        Accept: "application/json",
+        ResourceVersion: "v4",
+        app_id: process.env.VITE_SCHIPHOL_APP_ID,
+        app_key: process.env.VITE_SCHIPHOL_APP_KEY,
+      },
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      return res.status(response.status).send(text);
+      throw new Error(`Schiphol API error: ${response.status}`);
     }
 
     const data = await response.json();
     res.json(data);
   } catch (err) {
-    console.error("Proxy error:", err);
-    res.status(500).json({ error: "Proxy failed" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Proxy running on http://localhost:${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Proxy server running on http://localhost:${PORT}`));
