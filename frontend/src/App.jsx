@@ -16,7 +16,7 @@ function App() {
       setFlights([]);
       setLastUpdateTime("Bezig met laden...");
 
-      const url = `${import.meta.env.VITE_SCHIPHOL_API_URL}/${flightDirection === "D" ? "flights" : "flights/arrivals"}?app_id=${import.meta.env.VITE_SCHIPHOL_APP_ID}&app_key=${import.meta.env.VITE_SCHIPHOL_APP_KEY}&includedelays=false`;
+const url = `http://localhost:3001/api/flights?direction=${flightDirection}`;
 
       const response = await fetch(url, {
         headers: {
