@@ -1,0 +1,14 @@
+[
+  {
+    "flightName": "KL1234",
+    "route": "Amsterdam → Parijs",
+    "scheduledTime": "12:45",
+    "status": "Vertrokken"
+  },
+  {
+    "flightName": "KL5678",
+    "route": "Amsterdam → New York",
+    "scheduledTime": "14:20",
+    "status": "Boarding"
+  }
+]

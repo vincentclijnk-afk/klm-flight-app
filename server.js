@@ -1,38 +1,55 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const cors = require("cors");
-require("dotenv").config();
+// server.js
+import express from "express";
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+import cors from "cors";
 
+dotenv.config();
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 
-app.get("/flights", async (req, res) => {
-  try {
-    const direction = req.query.direction || "D";
-    const url = `${process.env.VITE_SCHIPHOL_API_URL}?flightDirection=${direction}`;
+// ✈️ Vluchten ophalen
+app.get("/api/flights", async (req, res) => {
+  const direction = req.query.direction || "D"; // D = vertrek, A = aankomst
+  const url = `https://api.schiphol.nl/public-flights/flights?flightDirection=${direction}&includedelays=false&page=0&sort=%2BscheduleTime`;
 
+  try {
     const response = await fetch(url, {
       headers: {
-        app_id: process.env.VITE_SCHIPHOL_APP_ID,
-        app_key: process.env.VITE_SCHIPHOL_APP_KEY,
+        app_id: process.env.SCHIPHOL_APP_ID,
+        app_key: process.env.SCHIPHOL_APP_KEY,
         ResourceVersion: "v4",
       },
     });
 
     if (!response.ok) {
-      throw new Error(`Schiphol API error: ${response.status}`);
+      const text = await response.text();
+      console.error("❌ Schiphol API fout:", text);
+      return res.status(response.status).json({ error: "API request failed", text });
     }
 
     const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error("❌ Fout bij ophalen vluchtinformatie:", error.message);
-    res.status(500).json({ error: "Fout bij ophalen vluchtinformatie" });
+
+    // ✈️ Compacte data teruggeven
+    const flights = (data.flights || []).map((f) => ({
+      flight: f.flightName || "Onbekend",
+      route: f.route?.destinations?.join(", ") || "Onbekend",
+      time: f.scheduleTime || "Onbekend",
+      // random lat/lon om tijdelijk markers te tonen
+      lat: 52.3086 + (Math.random() - 0.5) * 2, // rond Schiphol
+      lon: 4.7639 + (Math.random() - 0.5) * 2,
+    }));
+
+    res.json(flights);
+  } catch (err) {
+    console.error("🚨 Backend error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
+// 🌍 Start server
 app.listen(PORT, () => {
-  console.log(`✅ Proxy server running on http://localhost:${PORT}`);
+  console.log(`✅ Backend draait op http://localhost:${PORT}`);
 });

@@ -1,9 +1,9 @@
 {
+    "type": "module",
   "name": "klm-flight-app",
   "version": "1.0.0",
   "main": "server.js",
-  "type": "commonjs",
-  "scripts": {
+    "scripts": {
     "start": "node server.js"
   },
   "dependencies": {

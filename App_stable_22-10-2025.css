@@ -1,0 +1,86 @@
+/* ===== Algemene opmaak ===== */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #b3d9e8; /* oceaanblauw */
+  overflow-x: hidden;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Paneel bovenaan ===== */
+.panel {
+  background: white;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 400px;
+}
+
+.buttons {
+  margin-bottom: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+button.refresh {
+  background-color: #dc3545;
+  color: white;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.flight-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* ===== Fade overgang ===== */
+.fade-divider {
+  width: 100%;
+  height: 150px; /* halve hoogte */
+  background: linear-gradient(to bottom, #b3d9e8 0%, #9ac9d8 100%);
+  margin-top: -10px;
+  z-index: 2;
+}
+
+/* ===== Kaart ===== */
+.map-container {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: #b3d9e8; /* oceaan kleur */
+}

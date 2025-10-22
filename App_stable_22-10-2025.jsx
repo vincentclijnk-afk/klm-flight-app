@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "./App.css";
 
+// ✈️ Icoon voor vliegtuigen
 const planeIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/190/190601.png",
   iconSize: [25, 25],
@@ -16,11 +17,10 @@ function App() {
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
+  // 🛰️ Vluchten ophalen
   const fetchFlights = async () => {
     try {
-      const res = await fetch(
-        `http://192.168.68.77:3001/api/flights?direction=${direction}`
-      );
+      const res = await fetch(`http://192.168.68.77:3001/api/flights?direction=${direction}`);
       if (!res.ok) throw new Error("Failed to fetch flights");
       const data = await res.json();
       setFlights(data);
@@ -32,6 +32,7 @@ function App() {
     }
   };
 
+  // ⏱️ Elke 60 seconden verversen
   useEffect(() => {
     fetchFlights();
     const interval = setInterval(fetchFlights, 60000);
@@ -39,11 +40,10 @@ function App() {
   }, [direction]);
 
   return (
-    <>
+    <div className="App">
       {/* ===== Paneel bovenaan ===== */}
-      <div className="top-panel">
+      <div className="panel">
         <h2>KLM Flight App – {direction === "D" ? "Vertrekken" : "Aankomsten"}</h2>
-
         <div className="buttons">
           <button
             className={direction === "D" ? "active" : ""}
@@ -82,11 +82,12 @@ function App() {
       <div className="fade-divider"></div>
 
       {/* ===== Kaart ===== */}
-      <div className="map-section">
+      <div className="map-container">
         <MapContainer
-          center={[52.3086, 4.7639]}
+          center={[52.3086, 4.7639]} // Schiphol
           zoom={5}
           scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
           worldCopyJump={false}
           maxBounds={[
             [-85, -180],
@@ -100,27 +101,23 @@ function App() {
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            noWrap={true}
             attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           />
-          {flights.map(
-            (f, i) =>
-              f.lat &&
-              f.lon && (
-                <Marker key={i} position={[f.lat, f.lon]} icon={planeIcon}>
-                  <Popup>
-                    <strong>{f.flight}</strong>
-                    <br />
-                    {f.route}
-                    <br />
-                    {f.time}
-                  </Popup>
-                </Marker>
-              )
-          )}
+
+          {flights.map((f, i) => (
+            <Marker key={i} position={[f.lat, f.lon]} icon={planeIcon}>
+              <Popup>
+                <strong>{f.flight}</strong>
+                <br />
+                {f.route}
+                <br />
+                {f.time}
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
-    </>
+    </div>
   );
 }
 
